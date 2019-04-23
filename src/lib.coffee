@@ -22,10 +22,22 @@ max = (x, y) ->
   
 #Gets a random index from t that is not x
 another = (x, t) ->
-  y = cap(Math.floor(.5+Math.random()*t.length),1,t.length)
+  y = cap(Math.floor(.5+Math.random()*t.length),0,t.length-1)
   if x == y
     another(x, t)
   if t[y]?
     t[y]
   else
     another(x, t)
+    
+#Replace pattern a with pattern b in string s
+gsub = (s, a, b) -> 
+  s.replace a, b
+
+#Return a list of the 
+split = (s, sep = ",") ->
+  t = []
+  notsep = "([^" + sep + "]+)"
+  for y in s.match(notsep)
+    t[t.length] = y
+  t
