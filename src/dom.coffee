@@ -255,7 +255,7 @@ row = (t, cells ) ->
   for c, c0 in t.use
     # any chance that the different index systems will cause issues in areas like this?
     x = cells[c0]
-    if x?
+    if x != "?"
       if t.nums? and t.nums[c]?
         x = parseFloat x # String to float in JS
         numInc t.nums[c], x
