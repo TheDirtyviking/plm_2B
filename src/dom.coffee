@@ -38,19 +38,15 @@ Start of the sym file
 ###
 
 sym = () ->
-  sym =
-    counts : []
-    mode : null
-    most : 0
-    n : 0
-    ent : null
-  sym
+  counts : []
+  mode : null
+  most : 0
+  n : 0
 
 symInc = (t, x) ->
   if not x?
     x
   else
-    t.ent = null
     t.n = t.n + 1
     old = t.counts[x]
     newVal = if old then old + 1 else 1
@@ -72,18 +68,15 @@ Start of the num file
 objectId = this
 objectId = 0
 
-num = (txt = "") ->
-  num =
-    n : 0
-    mu : 0
-    m2 : 0
-    sd : 0
-    id : objectId++
-    lo : Math.pow 10,32
-    hi : -1 * Math.pow 10,32
-    txt1 : txt
-    w : 1
-  num
+num = () ->
+  n : 0
+  mu : 0
+  m2 : 0
+  sd : 0
+  id : objectId++
+  lo : Math.pow 10,32
+  hi : -1 * Math.pow 10,32
+  w : 1
 
 defaultFunction = ( x ) ->
   x 
@@ -167,7 +160,7 @@ split = (s, sep = ",") ->
 ###
 End of the lib file
 ###
-####################################################################
+
 ###
 Start of the Dom File
 ###
@@ -193,7 +186,7 @@ doms = (t) ->
     c = t.name.length
   else
     c = 0
-  #console.log(t.name + "," + ">dom")
+  console.log(t.name + "," + ">dom")
   for row1, r1 of t.rows
     row1[c] = 0
     for i in [0...n-1] by 1
@@ -201,7 +194,7 @@ doms = (t) ->
       s = dom(t,row1,row2)
       row1[c] = row1[c] + s
   #dump(t.rows)
-  #console.log(t.rows)
+  console.log(t.rows)
 
 mainDom = () ->
   doms(rows())
@@ -232,23 +225,22 @@ rows = () =>
           header t, cells
           first = false
         else
-          row t, cells 
+          row t, cells
   t
   
 header = (t, cells) ->
   t.indeps = []
   for c0, x of cells
     if not x.search "%?"
-      console.log("found a match")
+      #console.log("found a match")
       c = t.use.length
       t.use[c] = c0
       t.name[c] = x
       t.col[x] = c
       if x.match "[<>%$]"
-        t.nums[c] = num
+        t.nums[c] = num()
       else
-        t.syms[c] = sym
-        console.log(t.syms)
+        t.syms[c] = sym()
       if x.match "<"
         t.w[c] = -1
       else if x.match ">"
@@ -289,4 +281,3 @@ data = () ->
 ###
 End of the rows file
 ###
-
