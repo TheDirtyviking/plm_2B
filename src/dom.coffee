@@ -32,7 +32,7 @@ rl.on 'close', () =>
 End of stdinput reading
 Input is now in lines[]
 ###
-####################################################################
+
 ###
 Start of the sym file
 ###
@@ -44,6 +44,7 @@ sym = () ->
     most : 0
     n : 0
     ent : null
+  sym
 
 symInc = (t, x) ->
   if not x?
@@ -62,7 +63,7 @@ symInc = (t, x) ->
 ###
 End of the sym file
 ###
-####################################################################
+
 ###
 Start of the num file
 ###
@@ -82,6 +83,7 @@ num = (txt = "") ->
     hi : -1 * Math.pow 10,32
     txt1 : txt
     w : 1
+  num
 
 defaultFunction = ( x ) ->
   x 
@@ -191,14 +193,15 @@ doms = (t) ->
     c = t.name.length
   else
     c = 0
-  console.log(t.name + "," + ",>dom")
-  for row1, r1 in t.rows
+  #console.log(t.name + "," + ">dom")
+  for row1, r1 of t.rows
     row1[c] = 0
     for i in [0...n-1] by 1
       row2 = another(r1, t.rows)
       s = dom(t,row1,row2)
       row1[c] = row1[c] + s
-  dump(t.rows)
+  #dump(t.rows)
+  #console.log(t.rows)
 
 mainDom = () ->
   doms(rows())
@@ -206,7 +209,7 @@ mainDom = () ->
 ###
 End of the Dom file
 ###
-####################################################################
+
 ###
 Start of the rows File
 ###
@@ -220,38 +223,41 @@ rows = () =>
   first = true
   for line in lines 
     do (line) ->
-      console.log(line)
+      #console.log(line)
       line = gsub line, "[\t\r ]*", ""
       line = gsub line, "#.*", ""
-      cells = split line
+      cells = line.split ","
       if cells.length > 0
-        if first = true
-          header t cells
+        if first is true
+          header t, cells
+          first = false
         else
-          row t cells 
-      first = false
+          row t, cells 
+  t
   
 header = (t, cells) ->
   t.indeps = []
-  for c0, c in cells
-    if not x.match("%?")
+  for c0, x of cells
+    if not x.search "%?"
+      console.log("found a match")
       c = t.use.length
       t.use[c] = c0
       t.name[c] = x
       t.col[x] = c
       if x.match "[<>%$]"
-        t.nums[c] = num()
+        t.nums[c] = num
       else
-        t.syms[c] = sym()
+        t.syms[c] = sym
+        console.log(t.syms)
       if x.match "<"
-        t.x[c] = -1
+        t.w[c] = -1
       else if x.match ">"
-        t.x[c] = 1
+        t.w[c] = 1
       else if x.match "!"
         t.class = c
       else
-        
-        
+        t.indeps.push c 
+  t
   
 row = (t, cells ) ->
   r = t.rows.length # Don't need to add 1 like in rows.lua
@@ -260,11 +266,11 @@ row = (t, cells ) ->
     # any chance that the different index systems will cause issues in areas like this?
     x = cells[c0]
     if x?
-      x = parseFloat x # String to float in JS
       if t.nums? and t.nums[c]?
-        numInc t.nums[c],x
+        x = parseFloat x # String to float in JS
+        numInc t.nums[c], x
       else
-        symInc t.syms[c],x
+        symInc t.syms[c], x
     t.rows[r][c] = x # happens whether or not x was a float
   t
     
@@ -283,5 +289,4 @@ data = () ->
 ###
 End of the rows file
 ###
-####################################################################
 
