@@ -13,17 +13,18 @@ sym = () ->
     ent : null
 
 symInc = (t, x) ->
-  if x=="?"
+  if not x?
     x
-  t.ent = null
-  t.n = t.n + 1
-  old = t.counts[x]
-  new = old + 1 if old else 1
-  t.counts[x] = new
-  if new > t.most
-    t.most = new
-    t.mode = x
-  x
+  else
+    t.ent = null
+    t.n = t.n + 1
+    old = t.counts[x]
+    newVal = if old then old + 1 else 1
+    t.counts[x] = newVal
+    if newVal > t.most
+      t.most = newVal
+      t.mode = x
+    x
 
 ###
 End of the sym file
@@ -53,19 +54,20 @@ defaultFunction = ( x ) ->
   x 
 
 numInc = (t, x) ->
-  if x == "?"
+  if typeof x != "number"
     x
-  t.n = t.n + 1
-  d = x - t.mu
-  t.mu = t.mu + d / t.n
-  t.m2 = t.m2 + d * (x - t.mu )
-  if x > t.hi
-    t.hi = x
-  if x < t.lo
-    t.lo = x
-  if t.n >= 2
-    t.sd = Math.pow (t.m2 / ( t.n - 1 + Math.pow 10,-32 ) ),0.5
-  x
+  else
+    t.n = t.n + 1
+    d = x - t.mu
+    t.mu = t.mu + d / t.n
+    t.m2 = t.m2 + d * (x - t.mu )
+    if x > t.hi
+      t.hi = x
+    if x < t.lo
+      t.lo = x
+    if t.n >= 2
+      t.sd = Math.pow (t.m2 / ( t.n - 1 + Math.pow 10,-32 ) ),0.5
+    x
 
 numNorm = (t, x) ->
   if x?
@@ -168,3 +170,4 @@ mainDom = () ->
 ###
 End of the Dom file
 ###
+
