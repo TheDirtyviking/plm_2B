@@ -75,3 +75,25 @@ indep = (t, c) ->
 
 dep = (t, c) ->
   not indep t,c
+
+row = (t, cells ) ->
+  r = t.rows.length # Don't need to add 1 like in rows.lua
+  t.rows[r] = []
+  for c, c0 in t.use
+    # any chance that the different index systems will cause issues in areas like this?
+    x = cells[c0]
+    if x?
+      x = parseFloat x # String to float in JS
+      if t.nums? and t.nums[c]?
+        numInc t.nums[c],x
+      else
+        symInc t.syms[c],x
+    t.rows[r][c] = x # happens whether or not x was a float
+  t
+
+clone = (data0, rows) ->
+  data1 = header data0.name
+  for key, cells in rows or dat0.rows
+    row data1,cells
+  data1
+ 
