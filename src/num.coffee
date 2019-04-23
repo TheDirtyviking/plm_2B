@@ -34,11 +34,22 @@ numInc = (t, x) ->
     t.sd = Math.pow (t.m2 / ( t.n - 1 + Math.pow 10,-32 ) ),0.5
   x
 
+numNorm = (t, x) ->
+  if x?
+    (x - t.lo) / (t.hi - t.lo + Math.pow 10,-32 )
+  else
+    0.5
+
 nums = (t, f = defaultFunction) ->
   n = num
   numInc n,f value for key, value of t
 
 ###
+Class/method testing commands:
+num0 = num "test"
+console.log num0
+console.log numNorm num0
+
 Test commands:
 num1 = num "test"
 numInc num1,1
