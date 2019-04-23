@@ -1,4 +1,37 @@
 #!/usr/bin/coffee
+
+###
+Get Standard input, then call dom(rows)
+###
+
+# Make global variable id
+objectId = this
+objectId = 0
+
+# lines of input fron stdin
+lines = []
+
+# read lines from input
+readline = require 'readline'
+
+# create line reading interface
+rl = readline.createInterface
+  input: process.stdin
+  terminal: true
+    
+# read each line, adding it to lines
+rl.on 'line', (input) =>
+  lines.push(input)
+
+# once stdin is read, call main, end process
+rl.on 'close', () =>
+  mainDom()
+  process.exit 0
+
+###
+End of stdinput reading
+Input is now in lines[]
+###
 ####################################################################
 ###
 Start of the sym file
@@ -38,7 +71,7 @@ Start of the num file
 objectId = this
 objectId = 0
 
-num = (txt) ->
+num = (txt = "") ->
   num =
     n : 0
     mu : 0
@@ -154,7 +187,10 @@ dom = (t, row1, row2) ->
   
 doms = (t) ->
   n = 100
-  c = t.name.length + 1
+  if t.name?
+    c = t.name.length
+  else
+    c = 0
   console.log(t.name + "," + ",>dom")
   for row1, r1 in t.rows
     row1[c] = 0
@@ -170,4 +206,82 @@ mainDom = () ->
 ###
 End of the Dom file
 ###
+####################################################################
+###
+Start of the rows File
+###
+
+rows = () =>
+  #console.log(lines[lines.length - 1])
+  
+  # Construct an empty table
+  t = data()
+
+  first = true
+  for line in lines 
+    do (line) ->
+      console.log(line)
+      line = gsub line, "[\t\r ]*", ""
+      line = gsub line, "#.*", ""
+      cells = split line
+      if cells.length > 0
+        if first = true
+          header t cells
+        else
+          row t cells 
+      first = false
+  
+header = (t, cells) ->
+  t.indeps = []
+  for c0, c in cells
+    if not x.match("%?")
+      c = t.use.length
+      t.use[c] = c0
+      t.name[c] = x
+      t.col[x] = c
+      if x.match "[<>%$]"
+        t.nums[c] = num()
+      else
+        t.syms[c] = sym()
+      if x.match "<"
+        t.x[c] = -1
+      else if x.match ">"
+        t.x[c] = 1
+      else if x.match "!"
+        t.class = c
+      else
+        
+        
+  
+row = (t, cells ) ->
+  r = t.rows.length # Don't need to add 1 like in rows.lua
+  t.rows[r] = []
+  for c, c0 in t.use
+    # any chance that the different index systems will cause issues in areas like this?
+    x = cells[c0]
+    if x?
+      x = parseFloat x # String to float in JS
+      if t.nums? and t.nums[c]?
+        numInc t.nums[c],x
+      else
+        symInc t.syms[c],x
+    t.rows[r][c] = x # happens whether or not x was a float
+  t
+    
+data = () ->
+  data =
+    w : []
+    syms : []
+    nums : []
+    class : null
+    rows : []
+    name : []
+    col : []
+    use : []
+    indeps : []
+
+###
+End of the rows file
+###
+####################################################################
 
