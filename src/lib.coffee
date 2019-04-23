@@ -1,18 +1,12 @@
+#!/usr/bin/coffee
 #does ksort by accepting an object that has key and value pairs such as an array
 #o is the object to be sorted
 #reverse is a boolean indicating if the keys should be reversed
-
-ksort = (o, reverse) ->
-  k = for key of o
-    key
-  if reverse then k.sort() else k.reverse()
-  sorted = {}
-  sorted[key] = o[key] for key in k
-  sorted
   
 dump = (a, sep = ",") ->
-  cat = for s of a
-    cat.concat s.concat sep
+  cat = ""
+  for s of a
+    cat = cat + s + sep
   console.log cat
   
 cap = (x, lo, hi) ->
@@ -24,13 +18,10 @@ min = (x, y) ->
 max = (x, y) ->
   x < y and x or y
   
-another = (x, t, y) ->
-  y = cap(Math.floor(.5+ran()*t.length),1,t.length)
+another = (x, t) ->
+  y = cap(Math.floor(.5+Math.random()*t.length),1,t.length)
   if x == y
     another(x, t)
   if t[y]?
     t[y]
   another(x, t)
-  
-cat = (a, b) ->
-  a.concat b
