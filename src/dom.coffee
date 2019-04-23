@@ -110,17 +110,15 @@ nums = (t, f = defaultFunction) ->
 ###
 End of the num file
 ###
-####################################################################
+
 ###
 Start of the lib file
 ###
 
 #Takes an array and separates the values with the sep variable
-dump = (a, sep = ",") ->
-  cat = ""
-  for s of a
-    cat = cat + s + sep
-  console.log cat
+dump = (a) ->
+  for row in a
+    console.log row + ""
   
 #Takes 3 numbers and binds the x variable to the range 
 #defined by lo and hi
@@ -171,13 +169,13 @@ dom = (t, row1, row2) ->
   s2 = 0
   n = 0
   n++ for key in t.w
-  for c,w in t.w
+  for c,w of t.w
     a0 = row1[c]
     b0 = row2[c]
     a = numNorm( t.nums[c], a0)
     b = numNorm( t.nums[c], b0)
-    s1 = s1 - 10^(w * (a - b)/n)
-    s2 = s2 - 10^(w * (b - a)/n)
+    s1 = s1 - Math.pow 10,(w * (a - b)/n)
+    s2 = s2 - Math.pow 10,(w * (b - a)/n)
   s1/n < s2/n
   
 doms = (t) ->
@@ -187,14 +185,14 @@ doms = (t) ->
   else
     c = 0
   console.log(t.name + "," + ">dom")
-  for row1, r1 of t.rows
+  for r1, row1 of t.rows
     row1[c] = 0
     for i in [0...n-1] by 1
       row2 = another(r1, t.rows)
-      s = dom(t,row1,row2)
-      row1[c] = row1[c] + s
-  #dump(t.rows)
-  console.log(t.rows)
+      if dom(t,row1,row2)
+        row1[c] = row1[c] + ( 1 / n )
+    row1[c] = row1[c].toFixed 2
+  dump(t.rows)
 
 mainDom = () ->
   doms(rows())
