@@ -30,5 +30,6 @@ From then on, just
 
 ```
 cd src
-../etc/ide
+chmod +x run
+./run
 ```
