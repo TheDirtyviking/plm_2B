@@ -27,6 +27,14 @@ eg5:  ok; @$(hi); $(Auto) | dom | bestrest | super | rank
 eg6:  ok; @$(hi); $(Auto10) | dom | bestrest | super | rank
 eg7:  ok; @$(hi); $(Auto1M) | dom | bestrest | super | rank
 
+egc1:  ok; @$(hi); cat $(Test)/data/weather.csv
+egc2:  ok; @$(hi); cat $(Test)/data/weather.csv | dom
+egc3:  ok; @$(hi); cat $(Test)/data/weather.csv | coffee dom.coffee
+
+egc4: ok; @$(hi); $(Auto)
+egc5: ok; @$(hi); $(Auto) | dom 
+egc6: ok; @$(hi); $(Auto) | coffee dom.coffee
+
 eg10:
 	@$(MAKE) eg2a |  ./2d  weightSorted 4 weight 4
 	@$(MAKE) eg2a |  ./2d  accelSorted 5 accel 5
