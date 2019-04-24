@@ -40,16 +40,11 @@ Input is now in lines[]
 Start of the sym file
 ###
 
-sym = () ->
-  counts : []
-  mode : null
-  most : 0
-  n : 0
-
 symInc = (t, x) ->
   #Constructivity: if t is not an object, set it to a new sym object, if x is not a number, parse it to a number, failing that set it to zero
   if typeof t != 'object'
-    t = sym()
+    nsf = new NSFactory
+    t = nsf.sym
   if typeof x != 'number'
     if typeof x == 'string'
       x = parseFloat x
@@ -75,20 +70,11 @@ End of the sym file
 Start of the num file
 ###
 
-num = () ->
-  n : 0
-  mu : 0
-  m2 : 0
-  sd : 0
-  id : objectId++
-  lo : Math.pow 10,32
-  hi : -1 * Math.pow 10,32
-  w : 1
-
 numInc = (t, x) ->
   #Constructivity: If t is not an object, set it to an empty num object, if x is not a number, return x
   if typeof t != 'object'
-    t = num()
+    nsf = new NSFactory
+    t = nsf.sym
   if typeof x != "number"
     x
   else
@@ -271,6 +257,37 @@ rows = () =>
           row t, cells
   t
   
+#A class that holds the logic for creating a num or sym object, depending on the contents of a given string
+class NSFactory
+  
+  sym = () ->
+    counts : []
+    mode : null
+    most : 0
+    n : 0
+    
+  num = () ->
+    n : 0
+    mu : 0
+    m2 : 0
+    sd : 0
+    id : objectId++
+    lo : Math.pow 10,32
+    hi : -1 * Math.pow 10,32
+    w : 1
+  
+  create : (x) ->
+    #Constructivity: if x is not a string, make it an empty string
+    if typeof x != 'string'
+      x = ""
+    o  = []
+    if x.match "[<>%$]"
+      o = num()
+    else
+      o = sym()
+    o
+  
+
 header = (t, cells) ->
   #Constructivity: if the parameters are not objects, assign them to empty objects, assign t to have required fields
   if typeof t != 'object' or not t.indeps? or not t.use or not t.name or not t.col or not t.syms or not t.nums
@@ -280,15 +297,16 @@ header = (t, cells) ->
   t.indeps = []
   for c0, x of cells
     if not x.search "%?"
-      #console.log("found a match")
       c = t.use.length
       t.use[c] = c0
       t.name[c] = x
       t.col[x] = c
-      if x.match "[<>%$]"
-        t.nums[c] = num()
+      nsf = new NSFactory
+      o = nsf.create x,t
+      if o.counts?
+        t.syms[c] = o
       else
-        t.syms[c] = sym()
+        t.nums[c] = o
       if x.match "<"
         t.w[c] = -1
       else if x.match ">"
