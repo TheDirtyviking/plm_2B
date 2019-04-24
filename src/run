@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+
+sudo apt-get install -y coffeescript
+
+echo
+echo Note that dom values will differ slightly from dom.lua because coffeescript rng is unseedable
+echo
+
+make egc6
